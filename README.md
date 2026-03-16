@@ -12,7 +12,7 @@ trading analytics and scanning
 - `docker compose -f infra/docker-compose.yml up --build`
 
 ## Ingestion and Queueing
-- The scanner worker ingests equities from Polygon and options/futures from an IBKR adapter endpoint.
+- The scanner worker ingests equities from Massive.com and options/futures from an IBKR adapter endpoint.
 - All market payloads are written to Redis stream `market.ingestion`.
 - Scanner processing failures are routed to `market.dead_letter` for replay/debugging.
 

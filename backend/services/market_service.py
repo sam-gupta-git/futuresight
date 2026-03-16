@@ -10,10 +10,10 @@ from backend.models.signal import Signal
 
 
 async def fetch_equity_snapshot(symbol: str) -> dict[str, float | str]:
-    if not settings.polygon_api_key:
+    if not settings.massive_api_key:
         return _mock_equity_snapshot(symbol)
 
-    url = f"https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers/{symbol}?apiKey={settings.polygon_api_key}"
+    url = f"https://api.massive.com/v2/snapshot/locale/us/markets/stocks/tickers/{symbol}?apiKey={settings.massive_api_key}"
     async with httpx.AsyncClient(timeout=15.0) as client:
         response = await client.get(url)
         response.raise_for_status()

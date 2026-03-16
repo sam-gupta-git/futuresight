@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from backend.database import init_models
 from backend.routes.alerts import router as alerts_router
 from backend.routes.analytics import router as analytics_router
+from backend.routes.news import router as news_router
 from backend.routes.trades import router as trades_router
 from backend.routes.watchlist import router as watchlist_router
 
@@ -20,6 +21,7 @@ app.include_router(watchlist_router)
 app.include_router(alerts_router)
 app.include_router(trades_router)
 app.include_router(analytics_router)
+app.include_router(news_router)
 
 
 @app.get("/health")

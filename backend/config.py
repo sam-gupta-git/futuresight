@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     supabase_url: str = ""
     supabase_anon_key: str = ""
-    polygon_api_key: str = ""
+    massive_api_key: str = ""
     ibkr_api_key: str = ""
     ibkr_base_url: str = "http://localhost:5000/v1/api"
     slack_webhook: str = ""
