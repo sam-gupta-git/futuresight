@@ -82,6 +82,22 @@ async def test_get_news_with_filters() -> None:
 
 
 @pytest.mark.asyncio
+async def test_get_market_quotes() -> None:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/market/quotes?symbols=AAPL,MSFT")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    assert len(data) == 2
+    for q in data:
+        assert "symbol" in q
+        assert "price" in q
+        assert "change_pct" in q
+        assert "sparkline" in q
+        assert isinstance(q["sparkline"], list)
+
+
+@pytest.mark.asyncio
 async def test_risk_violation_creates_alert() -> None:
     payload = {
         "symbol": "TSLA",
