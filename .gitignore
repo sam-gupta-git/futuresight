@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+.pytest_cache/
+node_modules/
+.next/
+dist/
+coverage/
+*.db
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.DS_Store
+

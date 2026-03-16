@@ -1,0 +1,83 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: trading
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql:ro
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ..
+      dockerfile: infra/dockerfile.backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/trading
+      REDIS_URL: redis://redis:6379/0
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
+      POLYGON_API_KEY: ${POLYGON_API_KEY:-}
+      IBKR_API_KEY: ${IBKR_API_KEY:-}
+      IBKR_BASE_URL: ${IBKR_BASE_URL:-http://localhost:5000/v1/api}
+      SLACK_WEBHOOK: ${SLACK_WEBHOOK:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      ALERT_EMAIL_TO: ${ALERT_EMAIL_TO:-}
+      SCANNER_EQUITY_SYMBOLS: ${SCANNER_EQUITY_SYMBOLS:-AAPL,MSFT,NVDA}
+      SCANNER_OPTIONS_SYMBOLS: ${SCANNER_OPTIONS_SYMBOLS:-SPY,QQQ}
+      SCANNER_FUTURES_CONTRACTS: ${SCANNER_FUTURES_CONTRACTS:-ESM6,NQM6}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  worker:
+    build:
+      context: ..
+      dockerfile: infra/dockerfile.backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/trading
+      REDIS_URL: redis://redis:6379/0
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
+      POLYGON_API_KEY: ${POLYGON_API_KEY:-}
+      IBKR_API_KEY: ${IBKR_API_KEY:-}
+      IBKR_BASE_URL: ${IBKR_BASE_URL:-http://localhost:5000/v1/api}
+      SLACK_WEBHOOK: ${SLACK_WEBHOOK:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      ALERT_EMAIL_TO: ${ALERT_EMAIL_TO:-}
+      SCANNER_EQUITY_SYMBOLS: ${SCANNER_EQUITY_SYMBOLS:-AAPL,MSFT,NVDA}
+      SCANNER_OPTIONS_SYMBOLS: ${SCANNER_OPTIONS_SYMBOLS:-SPY,QQQ}
+      SCANNER_FUTURES_CONTRACTS: ${SCANNER_FUTURES_CONTRACTS:-ESM6,NQM6}
+    command: ["python", "workers/scanner_worker.py"]
+    depends_on:
+      - backend
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: infra/dockerfile.frontend
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:-}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
