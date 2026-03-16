@@ -1,6 +1,6 @@
-# Trading Platform
+# FutureSight
 
-Production-ready monorepo for trading analytics and scanning.
+trading analytics and scanning
 
 ## Run
 - `uvicorn backend.main:app --reload`

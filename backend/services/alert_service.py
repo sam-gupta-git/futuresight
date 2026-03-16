@@ -37,7 +37,7 @@ async def send_email_alert(message: str) -> None:
     payload = (
         f"From: {settings.smtp_user}\r\n"
         f"To: {settings.alert_email_to}\r\n"
-        "Subject: Trading Platform Alert\r\n"
+        "Subject: FutureSight Alert\r\n"
         "\r\n"
         f"{message}\r\n"
     )

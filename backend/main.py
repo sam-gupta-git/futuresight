@@ -15,7 +15,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     yield
 
 
-app = FastAPI(title="Trading Platform API", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="FutureSight API", version="1.0.0", lifespan=lifespan)
 app.include_router(watchlist_router)
 app.include_router(alerts_router)
 app.include_router(trades_router)
